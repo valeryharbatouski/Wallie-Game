@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using DG.Tweening;
 using Enemy_States;
-using Unity.VisualScripting;
 
 namespace UnityEngine
 {
@@ -10,9 +8,9 @@ namespace UnityEngine
     {
         [SerializeField] private float _speedDefault = 2.0f;
         [SerializeField] private float _maxDistanceToTarget = 5.0f;
+        
         private float _speed;
-        
-        
+
         protected override IEnumerator HandleStart()
         {
             if (StateArgs is not ChaseEnemyArgs chaseEnemyArgs)
@@ -33,6 +31,7 @@ namespace UnityEngine
                 
                 StateContext.MainTransform.position = Vector3.MoveTowards(StateContext.MainTransform.position,
                     chaseEnemyArgs.Transform.position,  _speed * Time.deltaTime);
+               
                 
                 
                 yield return null;

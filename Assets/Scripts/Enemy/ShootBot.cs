@@ -3,27 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
 using Enemy_States.StateArgs;
-using Unity.Mathematics;
 using UnityEngine;
-using Random = UnityEngine.Random;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
     public class ShootBot : MonoBehaviour, IEnemyStateContext
     {
         public Transform MainTransform => transform;
-        [SerializeField] private GameObject _bullet;
-        [SerializeField] private Transform _shootPoint;
+        
+        [SerializeField] private Shoot _shoot;
+        [SerializeField] private Health _health;
 
-        [SerializeField] private int _botHealth = 50;
-        private Bullet _bulletDamage;
+        [SerializeField] private Bullet _bullet;
 
-        [SerializeField] private Slider _botHealthBar;
-
-        [SerializeField] private COINSPAWNER _spawner;
-
-        [SerializeField] private float _mintimeValue = 0.1f;
-        [SerializeField] private float _maxtimeValue = 0.5f;
+        [SerializeField] private SpawnCoin _spawner;
 
         [SerializeField] private AbstractEnemyState _startState;
         [SerializeField] private List<AbstractEnemyState> _states;
@@ -32,16 +24,18 @@ using UnityEngine.UI;
 
         [Header("DEBUG")] [SerializeField] private AbstractEnemyState _currentState;
         
-        private void Start()
+
+        private void Awake()
         {
+            _shoot = GetComponent<Shoot>();
+            _health = GetComponent<Health>();
             foreach (var state in _states)
             {
                 state.Started += StateOnStart;
             }
             
             _startState.OnStart(this, null);
-            _botHealthBar.maxValue = _botHealth;
-            _spawner = GetComponent<COINSPAWNER>();
+            _spawner = GetComponent<SpawnCoin>();
         }
 
         private void FixedUpdate()
@@ -49,16 +43,11 @@ using UnityEngine.UI;
             if (_currentState.GetType() == typeof(ChaseEnemyState))
             {
                 LookToTarget();
+                // StartCoroutine(_shoot.StartShoot());
             }
         }
-        
-        private void LookToTarget()
-        {
-            transform.rotation = Quaternion.LookRotation(_target.transform.position - transform.position, transform.up);
-            _shootPoint.rotation = Quaternion.LookRotation(_target.transform.position - transform.position, transform.up);
-        }
-        
-        
+
+
         private void OnDestroy()
         {
             foreach (var state in _states)
@@ -72,31 +61,42 @@ using UnityEngine.UI;
             _currentState = state;
         }
 
-        private IEnumerator Shoot()
-        {
-            while (true)
-            {
-                yield return new WaitForSeconds(Random.Range((float)_mintimeValue, (float)_maxtimeValue));
-                Instantiate(_bullet, _shootPoint.position, _shootPoint.rotation);
-                
-            }
-            yield return null;
-        }
-
         private void OnTriggerEnter(Collider other)
         {
-            if (_botHealth == 0)
+            if (other.GetComponent<Player>())
             {
-                StopCoroutine(Shoot());
-                _botHealthBar.gameObject.SetActive(false);
+                StartCoroutine(_shoot.InfinityShoot());
+            }
+        }
+        
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.GetComponent<Player>())
+            {
+                StopAllCoroutines();
+            }
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (_health.HealthValue() == 0)
+            {
                 Destroy(gameObject);
                 _spawner.Spawner();
             }
-            if (other.GetComponent<Bullet>())
+            if (collision.collider.GetComponent<Bullet>())
             {
-                _botHealth -= 10;
-                _botHealthBar.value = _botHealth;
+                _health.TakeDamage(_bullet.DamageValue());
             }
+        }
+        
+        private void LookToTarget()
+        {
+            var _targetPosition = _target.transform.position;
+            var _currentPosition = transform.position;
+            var _positionDelta = _targetPosition - _currentPosition;
+            transform.rotation = Quaternion.LookRotation(_positionDelta, transform.up);
+            _shoot.ShootPiont().rotation = Quaternion.LookRotation(_positionDelta, transform.up);
         }
 
         private TEnemyState GetState<TEnemyState>() where TEnemyState : AbstractEnemyState
@@ -111,8 +111,6 @@ using UnityEngine.UI;
 
             throw new NullReferenceException();
         }
-
-        
 
         public void SwitchState<TEnemyState>(StateArgs args) where TEnemyState : AbstractEnemyState
         {

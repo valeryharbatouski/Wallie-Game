@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using DG.Tweening;
 using Enemy_States;
@@ -48,6 +47,14 @@ namespace UnityEngine
                 movement.Kill();
                 
                 StateContext.SwitchState<ChaseEnemyState>(new ChaseEnemyArgs(player.transform));
+            }
+        }
+        
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.TryGetComponent(out Player player))
+            {
+                StateContext.SwitchState<PatrolEnemyState>();
             }
         }
     }

@@ -1,4 +1,4 @@
-using System;
+using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.UI;
 public class Player : MonoBehaviour
@@ -10,13 +10,16 @@ public class Player : MonoBehaviour
     [SerializeField] private int _coinCounter = 0;
     [SerializeField] private Text Text;
 
-    [SerializeField] private Slider _heathBar;
-    [SerializeField] private float _healthValue = 100;
+    [Header("Health")]
+    [SerializeField] private Health _health;
+
     [SerializeField] private BotBullet _bullet;
 
     [SerializeField] private Animator _animator;
 
     [SerializeField] private VariableJoystick _joystick;
+
+    [SerializeField] private Shoot _shoot;
     
     
     private Vector3 _input;
@@ -24,13 +27,19 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        _heathBar.value = _healthValue;
+
+        _health = GetComponent<Health>();
         _animator = GetComponent<Animator>();
         _animator.ResetTrigger(IsWalking);
+        _shoot = GetComponent<Shoot>();
     }
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            StartCoroutine(_shoot.SingleShot());
+        }
         Inputs();
         Look();
     }
@@ -43,7 +52,7 @@ public class Player : MonoBehaviour
     private void Inputs()
     {
         // _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-        _input = new Vector3(_joystick.Horizontal, 0, _joystick.Vertical);
+        _input = new Vector3(_joystick.Horizontal, 0, _joystick.Vertical).normalized;
         
     }
 
@@ -73,8 +82,13 @@ public class Player : MonoBehaviour
             _coinCounter += value;
             Text.text = _coinCounter.ToString();
         }
-        if (collider.GetComponent<BotBullet>())
-        _healthValue -= _bullet.DamageValue();
-        _heathBar.value = _healthValue;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.GetComponent<BotBullet>())
+        {
+            _health.TakeDamage(_bullet.DamageValue());
+        }
     }
 }

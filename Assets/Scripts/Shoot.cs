@@ -1,25 +1,33 @@
+
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
-    [RequireComponent(typeof(Rigidbody))]
     public class Shoot : MonoBehaviour
     {
         [SerializeField] private GameObject _bullet;
         [SerializeField] private Transform _shootPoint;
+        [SerializeField] private int _shootDelay = 2; 
 
-        private void Update()
+        public GameObject Bullet() => _bullet;
+        public Transform ShootPiont() => _shootPoint;
+        public IEnumerator InfinityShoot() => InfinityShooting();
+        public IEnumerator SingleShot() => SingleShoot();
+        
+
+        private IEnumerator InfinityShooting()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            while (true)
             {
-                StartCoroutine(PlayerShoot());
+                yield return new WaitForSeconds(_shootDelay);
+                Instantiate(_bullet, _shootPoint.position, _shootPoint.rotation); 
             }
+            
+            //TODO Add null check
         }
 
-        private IEnumerator PlayerShoot()
+        private IEnumerator SingleShoot()
         {
             Instantiate(_bullet, _shootPoint.position, _shootPoint.rotation);
-            yield return new WaitForSeconds(2);
-            
+            yield return new WaitForSeconds(_shootDelay);
         }
     }
