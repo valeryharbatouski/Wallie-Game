@@ -1,4 +1,5 @@
 
+using System;
 using UnityEngine;
 
 namespace Valery
@@ -11,10 +12,13 @@ namespace Valery
 
       public int Value() => _value;
 
+      public event Action Collected;
+
       private void OnTriggerEnter(Collider _collider)
       {
          if (_collider.gameObject.GetComponent<Player>() != null)
          {
+            Collected?.Invoke();
             Destroy(gameObject);
          }
 

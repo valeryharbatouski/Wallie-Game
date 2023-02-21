@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,6 +27,8 @@ namespace Valery
         private Vector3 _input;
         private static readonly int IsWalking = Animator.StringToHash("isRunning");
 
+        public event Action<Coin> CoinColleted; 
+
         private void Awake()
         {
 
@@ -53,8 +56,8 @@ namespace Valery
 
         private void Inputs()
         {
-            // _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-            _input = new Vector3(_joystick.Horizontal, 0, _joystick.Vertical).normalized;
+            _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+            // _input = new Vector3(_joystick.Horizontal, 0, _joystick.Vertical).normalized;
 
         }
 
@@ -81,9 +84,10 @@ namespace Valery
         {
             if (collider.GetComponent<Coin>())
             {
-                var value = _coin.Value();
-                _coinCounter += value;
-                Text.text = _coinCounter.ToString();
+                CoinColleted?.Invoke(_coin);
+                // var value = _coin.Value();
+                // _coinCounter += value;
+                // Text.text = _coinCounter.ToString();
             }
         }
 
