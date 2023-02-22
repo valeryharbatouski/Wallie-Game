@@ -11,30 +11,28 @@ namespace Valery
         [Header("Movement")]
         [SerializeField] private float _speed = 5;
         [SerializeField] private float _turnSpeed = 360;
+
+        [Header("")]
+        [SerializeField] private BotBullet _botBullet;
         [SerializeField] private Coin _coin;
 
-        [Header("Health")] [SerializeField] private Health _health;
-
-        [SerializeField] private BotBullet _bullet;
-
         [SerializeField] private Animator _animator;
-
-        [SerializeField] private VariableJoystick _joystick;
+        //for Android
+        // [SerializeField] private VariableJoystick _joystick;
 
         private Rigidbody _rb;
         private Shoot _shoot;
         private Vector3 _input;
         
-        private static readonly int IsWalking = Animator.StringToHash("isRunning");
+        private static readonly int IsRunning = Animator.StringToHash("isRunning");
+        private static readonly int Idle = Animator.StringToHash("Idle");
 
         public event Action<Coin> CoinColleted;
-        public event Action<BotBullet> HittedByBullet;
+        public event Action<BotBullet> PlayerHittedByBullet;
 
         private void Awake()
         {
-            _health = GetComponent<Health>();
             _animator = GetComponent<Animator>();
-            _animator.ResetTrigger(IsWalking);
             _shoot = GetComponent<Shoot>();
             _rb = GetComponent<Rigidbody>();
         }
@@ -46,6 +44,14 @@ namespace Valery
                 StartCoroutine(_shoot.SingleShot());
             }
 
+            if (Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0)
+            {
+                _animator.SetTrigger(IsRunning);
+            }
+            else
+            {   _animator.ResetTrigger(IsRunning);
+                _animator.Play(Idle);
+            }
             Inputs();
             Look();
         }
@@ -58,7 +64,7 @@ namespace Valery
         private void Inputs()
         {
             _input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-            // _input = new Vector3(_joystick.Horizontal, 0, _joystick.Vertical).normalized;
+            // _input = new Vector3(_joystick.Horizontal, 0, _joystick.Vertical).normalized; 
 
         }
 
@@ -78,7 +84,6 @@ namespace Valery
         {
             _rb.MovePosition(transform.position +
                              transform.forward * (_input.normalized.magnitude * _speed * Time.deltaTime));
-            _animator.SetTrigger(IsWalking);
         }
 
         private void OnTriggerEnter(Collider collider)
@@ -93,8 +98,7 @@ namespace Valery
         {
             if (collision.collider.GetComponent<BotBullet>())
             {
-                HittedByBullet?.Invoke(_bullet);
-                _health.TakeDamage(_bullet.DamageValue());
+                PlayerHittedByBullet?.Invoke(_botBullet);
             }
         }
     }

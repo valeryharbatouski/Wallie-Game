@@ -46,7 +46,6 @@ GameObject:
   - component: {fileID: 631832163797246145}
   - component: {fileID: 631832163797246155}
   - component: {fileID: 631832163797246148}
-  - component: {fileID: 631832163797246154}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -123,11 +122,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 5
   _turnSpeed: 360
+  _botBullet: {fileID: 0}
   _coin: {fileID: 3870800326362192023, guid: cf68057f6702c464fae3bc1fbc11026a, type: 3}
-  _health: {fileID: 0}
-  _bullet: {fileID: 8062860819480905899, guid: daf727344b8884f769a1d8bb2f241ca2, type: 3}
   _animator: {fileID: 691225183649039974}
-  _joystick: {fileID: 0}
 --- !u!114 &631832163797246155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,20 +160,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &631832163797246154
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 631832163797246140}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d95fbac850d24825b6a3451d00dae88f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _health: 100
-  _heathBar: {fileID: 0}
 --- !u!1 &1371404772161532763
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +205,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _health: 100
-  _heathBar: {fileID: 0}
 --- !u!1001 &631832163606222678
 PrefabInstance:
   m_ObjectHideFlags: 0

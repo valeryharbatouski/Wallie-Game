@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Valery/Scenes/Map Screen.unity
     guid: 28f6707090b8549d88a7c1da948faf64
+  - enabled: 1
+    path: Assets/Valery/Scenes/Lose Screen.unity
+    guid: 687b218ef39174c13a5ada2d66d9828d
   m_configObjects: {}

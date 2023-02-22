@@ -8,7 +8,7 @@ namespace Valery
     {
         [SerializeField] private GameObject _bullet;
         [SerializeField] private Transform _shootPoint;
-        [SerializeField] private int _shootDelay = 2;
+        [SerializeField] private float _shootDelay = 2;
 
         public GameObject Bullet() => _bullet;
         public Transform ShootPiont() => _shootPoint;
