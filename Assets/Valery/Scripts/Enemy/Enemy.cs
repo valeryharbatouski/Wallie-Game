@@ -42,7 +42,6 @@ namespace Valery
             if (_currentState.GetType() == typeof(ChaseEnemyState))
             {
                 LookToTarget();
-                // StartCoroutine(_shoot.StartShoot());
             }
         }
 

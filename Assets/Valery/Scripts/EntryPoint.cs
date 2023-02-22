@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Valery
@@ -9,20 +10,26 @@ namespace Valery
         [SerializeField] private Enemy _enemy;
         [SerializeField] private Score _score;
         [SerializeField] private ScoreView _scoreView;
-        [SerializeField] private Coin _coin;
+        [SerializeField] private Health _health;
+        [SerializeField] private HealthView _healthView;
 
         private void Awake()
         {
             _score.ScoreUpdated += _scoreView.Set;
-            _player.CoinColleted += Collect;
-            
+            _player.CoinColleted += UpdateScore;
+            _health.HealthUpdated += _healthView.Set;
+            _player.HittedByBullet += TakeDamage;
+
         }
         
-
-        private void Collect(Coin obj)
+        private void UpdateScore(Coin obj)
         {
             _score.AddScore(obj.Value());
-            Debug.Log("test");
+        }
+
+        private void TakeDamage(BotBullet obj)
+        {
+            _health.TakeDamage(obj.DamageValue());
         }
     }
 }

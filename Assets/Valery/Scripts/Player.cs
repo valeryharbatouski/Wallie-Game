@@ -4,14 +4,14 @@ using UnityEngine.UI;
 
 namespace Valery
 {
+    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(Collider))]
     public class Player : MonoBehaviour
     {
-        [SerializeField] private Rigidbody _rb;
+        [Header("Movement")]
         [SerializeField] private float _speed = 5;
         [SerializeField] private float _turnSpeed = 360;
         [SerializeField] private Coin _coin;
-        [SerializeField] private int _coinCounter = 0;
-        [SerializeField] private Text Text;
 
         [Header("Health")] [SerializeField] private Health _health;
 
@@ -21,21 +21,22 @@ namespace Valery
 
         [SerializeField] private VariableJoystick _joystick;
 
-        [SerializeField] private Shoot _shoot;
-
-
+        private Rigidbody _rb;
+        private Shoot _shoot;
         private Vector3 _input;
+        
         private static readonly int IsWalking = Animator.StringToHash("isRunning");
 
-        public event Action<Coin> CoinColleted; 
+        public event Action<Coin> CoinColleted;
+        public event Action<BotBullet> HittedByBullet;
 
         private void Awake()
         {
-
             _health = GetComponent<Health>();
             _animator = GetComponent<Animator>();
             _animator.ResetTrigger(IsWalking);
             _shoot = GetComponent<Shoot>();
+            _rb = GetComponent<Rigidbody>();
         }
 
         private void Update()
@@ -85,9 +86,6 @@ namespace Valery
             if (collider.GetComponent<Coin>())
             {
                 CoinColleted?.Invoke(_coin);
-                // var value = _coin.Value();
-                // _coinCounter += value;
-                // Text.text = _coinCounter.ToString();
             }
         }
 
@@ -95,6 +93,7 @@ namespace Valery
         {
             if (collision.collider.GetComponent<BotBullet>())
             {
+                HittedByBullet?.Invoke(_bullet);
                 _health.TakeDamage(_bullet.DamageValue());
             }
         }
