@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Valery
 {
@@ -11,7 +12,7 @@ namespace Valery
 
         [SerializeField] private Shoot _shoot;
         [SerializeField] private Health _health;
-
+        [SerializeField] private Slider _healthbar;
         [SerializeField] private Bullet _bullet;
 
         [SerializeField] private SpawnCoin _spawner;
@@ -86,6 +87,7 @@ namespace Valery
             if (collision.collider.GetComponent<Bullet>())
             {
                 _health.TakeDamage(_bullet.DamageValue());
+                _healthbar.value = _health.HealthValue();
             }
         }
 

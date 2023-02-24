@@ -7,16 +7,16 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 0
     path: 
-    guid: 99c9720ab356a0642a771bea13969a05
+    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Valery/Scenes/Main Screen.unity
     guid: 716b46850f06b4eb4aab846805e4c188
   - enabled: 1
-    path: Assets/Valery/Scenes/Game Screen.unity
-    guid: 8147b9fab45f74b2c800a60ad2bf4054
-  - enabled: 1
     path: Assets/Valery/Scenes/Map Screen.unity
     guid: 28f6707090b8549d88a7c1da948faf64
+  - enabled: 1
+    path: Assets/Valery/Scenes/Game Screen.unity
+    guid: 8147b9fab45f74b2c800a60ad2bf4054
   - enabled: 1
     path: Assets/Valery/Scenes/Lose Screen.unity
     guid: 687b218ef39174c13a5ada2d66d9828d
